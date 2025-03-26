@@ -639,7 +639,7 @@
       <div class="modal-content">
         <button class="close-btn" @click="closeModal">&times;</button>
         <div class="modal-product">
-          <div class="product-img">
+    
             <div class="product-img">
             <img v-if="product.imgUrl" :src="product.imgUrl" :alt="product.name" width="100" height="100">
             </div>
@@ -726,8 +726,7 @@
         <div class="confirmation-content">
           <i class="fas fa-check-circle"></i>
           <h2>¡Pedido realizado con éxito!</h2>
-          <p>Tu número de pedido es: <strong>{{ orderNumber }}</strong></p>
-          <p>Puedes recogerlo en caja cuando esté listo.</p>
+          <p>Enseguida te servimos el pedido.</p>
           <button class="primary-btn" @click="startNewOrder">Realizar otro pedido</button>
         </div>
       </div>
