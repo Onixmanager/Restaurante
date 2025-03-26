@@ -638,10 +638,7 @@
         <button class="close-btn" @click="closeModal">&times;</button>
         <div class="modal-product">
           <div class="product-img large">
-            <svg :width="150" :height="150" viewBox="0 0 100 100">
-              <circle :cx="50" :cy="50" :r="45" :fill="selectedProduct.color" />
-              <path :d="selectedProduct.svgPath" fill="#fff" />
-            </svg>
+            
           </div>
           <h2>{{ selectedProduct.name }}</h2>
           <p class="description">{{ selectedProduct.description }}</p>
