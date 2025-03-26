@@ -172,18 +172,13 @@
       transform: translateY(-5px);
     }
     
-    .product-img img {
-  width: 500px; /* Ajusta el tamaño que prefieras */
-  height: auto; /* Mantiene la proporción */
-  max-width: 100%; /* Evita que se desborde en pantallas pequeñas */
+    .product-img {
       display: flex;
       justify-content: center;
       align-items: center;
-      padding: 0px;
+      padding: 20px;
       background-color: #f9f9f9;
     }
-
-     
     
     .product-info {
       padding: 15px;
@@ -576,7 +571,10 @@
           class="product-card"
           @click="showProductDetails(product)">
           <div class="product-img">
-            <img v-if="product.imgUrl" :src="product.imgUrl" :alt="product.name" width="100" height="100">
+            <svg :width="100" :height="100" viewBox="0 0 100 100">
+              <circle :cx="50" :cy="50" :r="45" :fill="product.color" />
+              <path :d="product.svgPath" fill="#fff" />
+            </svg>
           </div>
           <div class="product-info">
             <h3>{{ product.name }}</h3>
@@ -639,10 +637,12 @@
       <div class="modal-content">
         <button class="close-btn" @click="closeModal">&times;</button>
         <div class="modal-product">
-    
-            <div class="product-img">
-            <img v-if="product.imgUrl" :src="product.imgUrl" :alt="product.name" width="100" height="100">
-            </div>
+          <div class="product-img large">
+            <svg :width="150" :height="150" viewBox="0 0 100 100">
+              <circle :cx="50" :cy="50" :r="45" :fill="selectedProduct.color" />
+              <path :d="selectedProduct.svgPath" fill="#fff" />
+            </svg>
+          </div>
           <h2>{{ selectedProduct.name }}</h2>
           <p class="description">{{ selectedProduct.description }}</p>
           <p class="price">{{ formatPrice(selectedProduct.price) }}</p>
@@ -726,7 +726,8 @@
         <div class="confirmation-content">
           <i class="fas fa-check-circle"></i>
           <h2>¡Pedido realizado con éxito!</h2>
-          <p>Enseguida te servimos el pedido.</p>
+          <p>Tu número de pedido es: <strong>{{ orderNumber }}</strong></p>
+          <p>Puedes recogerlo en caja cuando esté listo.</p>
           <button class="primary-btn" @click="startNewOrder">Realizar otro pedido</button>
         </div>
       </div>
