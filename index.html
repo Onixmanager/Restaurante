@@ -494,18 +494,18 @@
   height: 40px; /* Ajusta este valor según la altura deseada */
 }
 
-    .product-img {
-  height: 200px; /* Altura fija para consistencia */
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
+    /* Estilos para las imágenes */
 .product-img img {
   width: 100%;
-  height: 100%;
+  max-height: 200px;
   object-fit: cover;
+  border-radius: var(--border-radius);
+}
+
+/* Para la versión grande en el modal */
+.product-img.large img {
+  max-height: 300px;
+  width: auto;
 }
     
     /* Responsive Design */
@@ -647,22 +647,19 @@
     </main>
 
     <!-- Modal de detalles de producto (para categorías que no sean Menú) -->
-    <div class="modal" v-if="selectedProduct" @click.self="closeModal">
-      <div class="modal-content">
-        <button class="close-btn" @click="closeModal">&times;</button>
-        <div class="modal-product">
-          <div class="product-img">
-  <img :src="product.image" :alt="product.name" class="product-image">
-          </div>
-          <h2>{{ selectedProduct.name }}</h2>
-          <p class="description">{{ selectedProduct.description }}</p>
-          <p class="price">{{ formatPrice(selectedProduct.price) }}</p>
-          
-          <div class="quantity-control">
-            <button @click="decreaseQuantity">-</button>
-            <span>{{ quantity }}</span>
-            <button @click="increaseQuantity">+</button>
-          </div>
+<div class="modal" v-if="selectedProduct" @click.self="closeModal">
+  <div class="modal-content">
+    <button class="close-btn" @click="closeModal">&times;</button>
+    <div class="modal-product">
+      <div class="product-img large">
+        <!-- Corregido a selectedProduct -->
+        <img :src="selectedProduct.image" :alt="selectedProduct.name" class="product-image">
+      </div>
+      <h2>{{ selectedProduct.name }}</h2>
+      <!-- ... resto del código del modal ... -->
+    </div>
+  </div>
+</div>
           
           <button class="add-to-cart" @click="addToCart">
             Añadir al carrito - {{ formatPrice(selectedProduct.price * quantity) }}
