@@ -1,0 +1,1086 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MESA 1</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script type="importmap">
+    {
+      "imports": {
+        "vue": "https://unpkg.com/vue@3/dist/vue.esm-browser.js"
+      }
+    }
+  </script>
+  <style>
+    :root {
+      --primary-color: #e74c3c;
+      --secondary-color: #f39c12;
+      --dark-color: #2c3e50;
+      --light-color: #ecf0f1;
+      --text-color: #333;
+      --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      --border-radius: 8px;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    body {
+      background-color: #f5f5f5;
+      color: var(--text-color);
+    }
+    
+    #app {
+      position: relative;
+      min-height: 100vh;
+    }
+    
+    /* Header */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem;
+      background-color: white;
+      box-shadow: var(--shadow);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .logo h1 {
+      font-size: 1.2rem;
+      color: var(--primary-color);
+    }
+    
+    .cart-icon {
+      position: relative;
+      font-size: 1.5rem;
+      color: var(--dark-color);
+      cursor: pointer;
+    }
+    
+    .cart-count {
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      background-color: var(--primary-color);
+      color: white;
+      font-size: 0.7rem;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    /* Main content */
+    main {
+      padding: 1rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    /* Categorías */
+    .categories {
+      display: flex;
+      overflow-x: auto;
+      gap: 10px;
+      padding-bottom: 10px;
+      margin-bottom: 20px;
+    }
+    
+    .categories button {
+      background-color: white;
+      border: none;
+      border-radius: var(--border-radius);
+      padding: 10px 15px;
+      white-space: nowrap;
+      cursor: pointer;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    
+    .categories button.active {
+      background-color: var(--primary-color);
+      color: white;
+    }
+    
+    .categories button i {
+      font-size: 1rem;
+    }
+    
+    /* Subcategorías */
+    .subcategories {
+      display: flex;
+      overflow-x: auto;
+      gap: 10px;
+      padding-bottom: 10px;
+      margin-bottom: 20px;
+    }
+    
+    .subcategories button {
+      background-color: white;
+      border: none;
+      border-radius: var(--border-radius);
+      padding: 8px 12px;
+      white-space: nowrap;
+      cursor: pointer;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+    }
+    
+    .subcategories button.active {
+      background-color: var(--primary-color);
+      color: white;
+    }
+    
+    /* Productos */
+    .products {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+    }
+    
+    .product-card {
+      background-color: white;
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .product-card:hover {
+      transform: translateY(-5px);
+    }
+    
+    .product-img {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      background-color: #f9f9f9;
+    }
+    
+    .product-info {
+      padding: 15px;
+    }
+    
+    .product-info h3 {
+      margin-bottom: 8px;
+      color: var(--dark-color);
+    }
+    
+    .description {
+      color: #777;
+      font-size: 0.9rem;
+      margin-bottom: 10px;
+    }
+    
+    .price {
+      font-weight: bold;
+      color: var(--primary-color);
+      font-size: 1.1rem;
+    }
+    
+    /* Vista especial para Menú */
+    .menu-details {
+      background-color: white;
+      border-radius: var(--border-radius);
+      padding: 20px;
+      box-shadow: var(--shadow);
+      margin-bottom: 20px;
+    }
+    
+    .menu-details h2 {
+      margin-bottom: 10px;
+      color: var(--dark-color);
+    }
+    
+    .menu-details p {
+      margin-bottom: 15px;
+    }
+    
+    .menu-section {
+      margin-bottom: 15px;
+    }
+    
+    .menu-section h3 {
+      margin-bottom: 5px;
+    }
+    
+    .menu-section ul {
+      list-style: none;
+      padding-left: 0;
+    }
+    
+    .menu-section li {
+      margin-bottom: 5px;
+    }
+    
+    /* Modal */
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 100;
+    }
+    
+    .modal-content {
+      background-color: white;
+      border-radius: var(--border-radius);
+      width: 90%;
+      max-width: 500px;
+      max-height: 90vh;
+      overflow-y: auto;
+      position: relative;
+    }
+    
+    .close-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: #777;
+    }
+    
+    .modal-product {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+    
+    .product-img.large {
+      margin-bottom: 20px;
+    }
+    
+    .quantity-control {
+      display: flex;
+      align-items: center;
+      margin: 20px 0;
+    }
+    
+    .quantity-control button {
+      width: 40px;
+      height: 40px;
+      background-color: #f5f5f5;
+      border: none;
+      border-radius: 50%;
+      font-size: 1.2rem;
+      cursor: pointer;
+    }
+    
+    .quantity-control span {
+      margin: 0 15px;
+      font-size: 1.2rem;
+      font-weight: bold;
+    }
+    
+    .add-to-cart {
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      border-radius: var(--border-radius);
+      padding: 12px 20px;
+      font-size: 1rem;
+      cursor: pointer;
+      width: 100%;
+      transition: background-color 0.3s;
+    }
+    
+    .add-to-cart:hover {
+      background-color: #c0392b;
+    }
+    
+    /* Cart Panel */
+    .cart-panel {
+      position: fixed;
+      top: 0;
+      right: -100%;
+      width: 90%;
+      max-width: 400px;
+      height: 100%;
+      background-color: white;
+      box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+      z-index: 50;
+      transition: right 0.3s ease;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .cart-panel.open {
+      right: 0;
+    }
+    
+    .cart-header {
+      padding: 20px;
+      border-bottom: 1px solid #eee;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .cart-items {
+      flex: 1;
+      overflow-y: auto;
+      padding: 15px;
+    }
+    
+    .cart-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 0;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .item-info h3 {
+      font-size: 1rem;
+      margin-bottom: 5px;
+    }
+    
+    .item-actions {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+    
+    .item-total {
+      font-weight: bold;
+    }
+    
+    .remove-btn {
+      background: none;
+      border: none;
+      color: #999;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+    
+    .remove-btn:hover {
+      color: var(--primary-color);
+    }
+    
+    .cart-empty {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: #999;
+      padding: 30px;
+    }
+    
+    .cart-empty i {
+      font-size: 4rem;
+      margin-bottom: 20px;
+    }
+    
+    .cart-summary {
+      padding: 20px;
+      background-color: #f9f9f9;
+      border-top: 1px solid #eee;
+    }
+    
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      align-items: center;
+    }
+    
+    .summary-row.total {
+      font-weight: bold;
+      font-size: 1.1rem;
+      border-top: 1px solid #ddd;
+      padding-top: 10px;
+      margin-top: 10px;
+    }
+    
+    .checkout-btn {
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      padding: 15px;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    
+    .checkout-btn:hover {
+      background-color: #c0392b;
+    }
+    
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 40;
+    }
+    
+    /* Confirmation modal */
+    .confirmation-content {
+      padding: 30px 20px;
+      text-align: center;
+    }
+    
+    .confirmation-content i {
+      font-size: 5rem;
+      color: var(--secondary-color);
+      margin-bottom: 20px;
+    }
+    
+    .confirmation-content h2 {
+      margin-bottom: 15px;
+      color: var(--dark-color);
+    }
+    
+    .confirmation-content p {
+      margin-bottom: 15px;
+      color: #555;
+    }
+    
+    .primary-btn {
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      border-radius: var(--border-radius);
+      padding: 12px 20px;
+      font-size: 1rem;
+      cursor: pointer;
+      margin-top: 20px;
+      transition: background-color 0.3s;
+    }
+    
+    .primary-btn:hover {
+      background-color: #c0392b;
+    }
+    
+  .notes-input {
+  width: 50%;
+  padding: 5px;
+  height: 40px; /* Ajusta este valor según la altura deseada */
+}
+    
+    /* Responsive Design */
+    @media (max-width: 767px) {
+      .products {
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+        gap: 15px;
+      }
+      
+      .product-info h3 {
+        font-size: 0.9rem;
+      }
+      
+      .description {
+        font-size: 0.8rem;
+      }
+      
+      .categories button {
+        padding: 8px 12px;
+        font-size: 0.9rem;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .logo h1 {
+        font-size: 1rem;
+      }
+      
+      .cart-panel {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <header>
+     <div class="logo">
+    <img src="ruta-del-logo.png" alt="Logo del Restaurante" width="40" height="40">
+    <h1>Nombre Restaurante</h1>
+</div>
+      <div class="cart-icon" @click="toggleCart">
+        <i class="fas fa-shopping-cart"></i>
+        <span class="cart-count" v-if="cartItems.length > 0">{{ cartItems.length }}</span>
+      </div>
+    </header>
+
+    <main>
+      <!-- Categorías -->
+      <div class="categories">
+        <button 
+          v-for="category in categories" 
+          :key="category.id" 
+          @click="selectCategory(category)"
+          :class="{ active: selectedCategory.id === category.id }">
+          <i :class="category.icon"></i>
+          {{ category.name }}
+        </button>
+      </div>
+
+      <!-- Subcategorías (si existen en la categoría seleccionada) -->
+      <div class="subcategories" v-if="selectedCategory.subcategories">
+        <button 
+          v-for="sub in selectedCategory.subcategories" 
+          :key="sub.id" 
+          @click="selectSubcategory(sub)"
+          :class="{ active: selectedSubcategory && selectedSubcategory.id === sub.id }">
+          {{ sub.name }}
+        </button>
+      </div>
+
+      <!-- Vista normal para categorías que no sean Menú -->
+      <div class="products" v-if="selectedCategory.id !== 6">
+        <div 
+          v-for="product in filteredProducts" 
+          :key="product.id" 
+          class="product-card"
+          @click="showProductDetails(product)">
+          <div class="product-img">
+            <svg :width="100" :height="100" viewBox="0 0 100 100">
+              <circle :cx="50" :cy="50" :r="45" :fill="product.color" />
+              <path :d="product.svgPath" fill="#fff" />
+            </svg>
+          </div>
+          <div class="product-info">
+            <h3>{{ product.name }}</h3>
+            <p class="description">{{ product.description }}</p>
+            <p class="price">{{ formatPrice(product.price) }}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Vista especial para Menú: cuando se seleccione una subcategoría -->
+      <div v-else-if="selectedCategory.id === 6 && selectedSubcategory">
+        <div class="menu-details">
+          <h2>{{ selectedSubcategory.name }}</h2>
+          <p>Precio: {{ formatPrice(menuDetails[selectedSubcategory.id].price) }}</p>
+          
+          <div class="menu-section">
+            <h3>Primeros Platos</h3>
+            <ul>
+              <li v-for="option in menuDetails[selectedSubcategory.id].firstCourses" :key="option.id">
+                <label>
+                  <input type="radio" :value="option" v-model="selectedFirstCourse" name="firstCourse">
+                  {{ option.name }}
+                </label>
+              </li>
+            </ul>
+          </div>
+          <div class="menu-section">
+            <h3>Segundos Platos</h3>
+            <ul>
+              <li v-for="option in menuDetails[selectedSubcategory.id].secondCourses" :key="option.id">
+                <label>
+                  <input type="radio" :value="option" v-model="selectedSecondCourse" name="secondCourse">
+                  {{ option.name }}
+                </label>
+              </li>
+            </ul>
+          </div>
+          <div class="menu-section">
+            <h3>Postres</h3>
+            <ul>
+              <li v-for="option in menuDetails[selectedSubcategory.id].desserts" :key="option.id">
+                <label>
+                  <input type="radio" :value="option" v-model="selectedDessert" name="dessert">
+                  {{ option.name }}
+                </label>
+              </li>
+            </ul>
+          </div>
+          <button class="add-to-cart" 
+                  :disabled="!selectedFirstCourse || !selectedSecondCourse || !selectedDessert"
+                  @click="addMenuToCart(selectedSubcategory.id)">
+            Añadir menú al carrito - {{ formatPrice(menuDetails[selectedSubcategory.id].price) }}
+          </button>
+        </div>
+      </div>
+    </main>
+
+    <!-- Modal de detalles de producto (para categorías que no sean Menú) -->
+    <div class="modal" v-if="selectedProduct" @click.self="closeModal">
+      <div class="modal-content">
+        <button class="close-btn" @click="closeModal">&times;</button>
+        <div class="modal-product">
+          <div class="product-img large">
+            <svg :width="150" :height="150" viewBox="0 0 100 100">
+              <circle :cx="50" :cy="50" :r="45" :fill="selectedProduct.color" />
+              <path :d="selectedProduct.svgPath" fill="#fff" />
+            </svg>
+          </div>
+          <h2>{{ selectedProduct.name }}</h2>
+          <p class="description">{{ selectedProduct.description }}</p>
+          <p class="price">{{ formatPrice(selectedProduct.price) }}</p>
+          
+          <div class="quantity-control">
+            <button @click="decreaseQuantity">-</button>
+            <span>{{ quantity }}</span>
+            <button @click="increaseQuantity">+</button>
+          </div>
+          
+          <button class="add-to-cart" @click="addToCart">
+            Añadir al carrito - {{ formatPrice(selectedProduct.price * quantity) }}
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Panel del carrito -->
+    <div class="cart-panel" :class="{ open: isCartOpen }">
+      <div class="cart-header">
+        <h2>Tu pedido</h2>
+        <button class="close-btn" @click="toggleCart">&times;</button>
+      </div>
+      
+      <div class="cart-items" v-if="cartItems.length > 0">
+        <div v-for="(item, index) in cartItems" :key="index" class="cart-item">
+          <div class="item-info">
+            <h3>{{ item.product.name }}</h3>
+            <p v-if="item.details">
+              ({{ item.details.firstCourse.name }} / {{ item.details.secondCourse.name }} / {{ item.details.dessert.name }})
+            </p>
+            <p v-else>
+              {{ item.quantity }} x {{ formatPrice(item.product.price) }}
+            </p>
+          </div>
+          <div class="item-actions">
+            <p class="item-total">
+              <span v-if="item.details">{{ formatPrice(item.product.price) }}</span>
+              <span v-else>{{ formatPrice(item.product.price * item.quantity) }}</span>
+            </p>
+            <button class="remove-btn" @click="removeFromCart(index)">
+              <i class="fas fa-trash"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      <div class="cart-empty" v-else>
+        <i class="fas fa-shopping-basket"></i>
+        <p>Tu carrito está vacío</p>
+      </div>
+      
+      <!-- Resumen del carrito sin IVA, con campo de notas -->
+<div class="cart-summary" v-if="cartItems.length > 0">
+  <div class="summary-row">
+    <span>Subtotal:</span>
+    <span>{{ formatPrice(cartSubtotal) }}</span>
+  </div>
+  <div class="summary-row">
+    <span>Notas:</span>
+    <input type="text" class="notes-input" v-model="orderNotes" placeholder="Agrega tus notas"/>
+  </div>
+  <div class="summary-row total">
+    <span>Total:</span>
+    <span>{{ formatPrice(cartTotal) }}</span>
+  </div>
+</div>
+      
+      <button class="checkout-btn" v-if="cartItems.length > 0" @click="checkout">
+        Realizar pedido
+      </button>
+    </div>
+
+    <!-- Overlay para el carrito -->
+    <div class="overlay" v-if="isCartOpen" @click="toggleCart"></div>
+    
+    <!-- Modal de confirmación de pedido -->
+    <div class="modal" v-if="showOrderConfirmation" @click.self="showOrderConfirmation = false">
+      <div class="modal-content">
+        <button class="close-btn" @click="showOrderConfirmation = false">&times;</button>
+        <div class="confirmation-content">
+          <i class="fas fa-check-circle"></i>
+          <h2>¡Pedido realizado con éxito!</h2>
+          <p>Tu número de pedido es: <strong>{{ orderNumber }}</strong></p>
+          <p>Puedes recogerlo en caja cuando esté listo.</p>
+          <button class="primary-btn" @click="startNewOrder">Realizar otro pedido</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script type="module">
+    import { createApp, ref, computed, watch } from 'vue';
+
+    createApp({
+      setup() {
+        const categories = ref([
+        
+        { id: 4, name: 'Bebidas', icon: 'fas fa-glass-cheers', subcategories: [
+                { id: 41, name: 'Con alcohol' },
+                { id: 42, name: 'Sin alcohol' }
+             ] },
+             
+              { id: 1, name: 'Bocadillos', icon: 'fas fa-hamburger' },
+         { id: 2, name: 'Tapas', icon: 'fas fa-drumstick-bite' },
+                             
+          { id: 3, name: 'Ensaladas', icon: 'fas fa-leaf' },
+         
+          { id: 5, name: 'Postres', icon: 'fas fa-ice-cream' },
+          
+           { id: 6, name: 'Menú', icon: 'fas fa-utensils', subcategories: [
+                { id: 61, name: 'Menú Día' },
+                { id: 62, name: 'Menú Festivo' }  ] },
+      
+            
+        ]);
+
+        // Productos para las categorías que no sean Menú
+      const products = ref([
+  { 
+    id: 1,
+    name: 'Hamburguesa Clásica',
+    description: 'Carne de res, queso cheddar, lechuga, tomate y mayonesa',
+    price: 8.50,
+    categoryId: 1,
+    color: '#e67e22',
+    image: 'ruta-de-tu-imagen.jpg'
+  },
+          { 
+            id: 2,
+            name: 'Hamburguesa BBQ',
+            description: 'Carne de res, bacon, cebolla crujiente, queso y salsa BBQ',
+            price: 9.95,
+            categoryId: 1,
+            color: '#d35400',
+            image: 'ruta-de-tu-imagen.jpg'
+          },
+          { 
+            id: 3,
+            name: 'Pizza Margarita',
+            description: 'Tomate, mozzarella y albahaca fresca',
+            price: 12.50,
+            categoryId: 2,
+            color: '#c0392b',
+            image: 'ruta-de-tu-imagen.jpg'
+          },
+          { 
+            id: 4,
+            name: 'Ensalada César',
+            description: 'Lechuga romana, pollo, crutons, parmesano y salsa césar',
+            price: 7.50,
+            categoryId: 3,
+            color: '#27ae60',
+            image: 'ruta-de-tu-imagen.jpg'
+          },
+          { 
+            id: 5,
+            name: 'Refresco Cola',
+            description: 'Refresco de cola 330ml',
+            price: 2.50,
+            categoryId: 4,
+            subcategoryId: 42,
+            color: '#34495e',
+            image: 'ruta-de-tu-imagen.jpg'
+          },
+          { 
+            id: 6,
+            name: 'Tarta de Chocolate',
+            description: 'Tarta casera de chocolate con nueces',
+            price: 5.95,
+            categoryId: 5,
+            color: '#8e44ad',
+            image: 'ruta-de-tu-imagen.jpg'
+          },
+          { 
+            id: 7,
+            name: 'Hamburguesa Vegana',
+            description: 'Hamburguesa de garbanzos con aguacate y vegetales',
+            price: 8.95,
+            categoryId: 1,
+            color: '#16a085',
+            image: 'ruta-de-tu-imagen.jpg'
+          },
+          { 
+            id: 8,
+            name: 'Pizza Pepperoni',
+            description: 'Tomate, mozzarella y pepperoni',
+            price: 13.50,
+            categoryId: 2,
+            color: '#c0392b',
+            image: 'ruta-de-tu-imagen.jpg'
+          },
+          // Productos base para Menú
+          { 
+            id: 10,
+            name: 'Menú Día',
+            description: 'Plato del día con entrada, plato principal y postre',
+            price: 15.50,
+            categoryId: 6,
+            subcategoryId: 61,
+            color: '#ff6347',
+            image: 'ruta-de-tu-imagen.jpg'
+          },
+          { 
+            id: 11,
+            name: 'Menú Festivo',
+            description: 'Menú especial para días festivos con opciones gourmet',
+            price: 25.50,
+            categoryId: 6,
+            subcategoryId: 62,
+            color: '#ff4500',
+            image: 'ruta-de-tu-imagen.jpg'
+          }
+        ]);
+
+        // Datos para la vista especial de Menú
+        const menuDetails = {
+          61: { // Menú Día
+            price: 15.50,
+            firstCourses: [
+              { id: 'fd1', name: 'Ensalada mixta' },
+              { id: 'fd2', name: 'Sopa de verduras' }
+            ],
+            secondCourses: [
+              { id: 'sd1', name: 'Pollo asado' },
+              { id: 'sd2', name: 'Pescado al horno' }
+            ],
+            desserts: [
+              { id: 'd1', name: 'Fruta fresca' },
+              { id: 'd2', name: 'Flan casero' }
+            ]
+          },
+          62: { // Menú Festivo
+            price: 25.50,
+            firstCourses: [
+              { id: 'fd3', name: 'Ensalada gourmet' },
+              { id: 'fd4', name: 'Crema de mariscos' }
+            ],
+            secondCourses: [
+              { id: 'sd3', name: 'Filete de ternera' },
+              { id: 'sd4', name: 'Lomo de cerdo' }
+            ],
+            desserts: [
+              { id: 'd3', name: 'Tarta de queso' },
+              { id: 'd4', name: 'Helado artesanal' }
+            ]
+          }
+        };
+
+        // Variables para la selección en Menú
+        const selectedFirstCourse = ref(null);
+        const selectedSecondCourse = ref(null);
+        const selectedDessert = ref(null);
+
+        const selectedCategory = ref(categories.value[0]);
+        const selectedSubcategory = ref(null);
+        const selectedProduct = ref(null);
+        const quantity = ref(1);
+        const cartItems = ref([]);
+        const isCartOpen = ref(false);
+        const showOrderConfirmation = ref(false);
+        const orderNumber = ref('');
+        const orderNotes = ref('');
+
+        const filteredProducts = computed(() => {
+          // Si la categoría es Menú se retorna un array vacío para no mostrar productos
+          if (selectedCategory.value.id === 6) return [];
+          let filtered = products.value.filter(product => product.categoryId === selectedCategory.value.id);
+          if (selectedSubcategory.value) {
+            filtered = filtered.filter(product => product.subcategoryId === selectedSubcategory.value.id);
+          }
+          return filtered;
+        });
+
+        const cartSubtotal = computed(() => {
+          return cartItems.value.reduce((sum, item) => {
+            return sum + (item.product.price * item.quantity);
+          }, 0);
+        });
+
+        // Sin IVA, el total es igual al subtotal
+        const cartTotal = computed(() => {
+          return cartSubtotal.value;
+        });
+
+        function selectCategory(category) {
+          selectedCategory.value = category;
+          selectedSubcategory.value = null;
+          if (category.id !== 6) {
+            selectedFirstCourse.value = null;
+            selectedSecondCourse.value = null;
+            selectedDessert.value = null;
+          }
+        }
+
+        function selectSubcategory(sub) {
+          selectedSubcategory.value = sub;
+          selectedFirstCourse.value = null;
+          selectedSecondCourse.value = null;
+          selectedDessert.value = null;
+        }
+
+        function showProductDetails(product) {
+          selectedProduct.value = product;
+          quantity.value = 1;
+        }
+
+        function closeModal() {
+          selectedProduct.value = null;
+        }
+
+        function increaseQuantity() {
+          quantity.value++;
+        }
+
+        function decreaseQuantity() {
+          if (quantity.value > 1) {
+            quantity.value--;
+          }
+        }
+
+        function addToCart() {
+          const existingItem = cartItems.value.find(
+            item => item.product.id === selectedProduct.value.id
+          );
+          if (existingItem) {
+            existingItem.quantity += quantity.value;
+          } else {
+            cartItems.value.push({
+              product: selectedProduct.value,
+              quantity: quantity.value
+            });
+          }
+          closeModal();
+          isCartOpen.value = true;
+        }
+
+        function addMenuToCart(menuId) {
+          if (!selectedFirstCourse.value || !selectedSecondCourse.value || !selectedDessert.value) return;
+          const menuProduct = products.value.find(p => p.categoryId === 6 && p.subcategoryId === menuId);
+          if (menuProduct) {
+            cartItems.value.push({
+              product: menuProduct,
+              quantity: 1,
+              details: {
+                firstCourse: selectedFirstCourse.value,
+                secondCourse: selectedSecondCourse.value,
+                dessert: selectedDessert.value
+              }
+            });
+          }
+          selectedFirstCourse.value = null;
+          selectedSecondCourse.value = null;
+          selectedDessert.value = null;
+          isCartOpen.value = true;
+        }
+
+        function removeFromCart(index) {
+          cartItems.value.splice(index, 1);
+        }
+
+        function toggleCart() {
+          isCartOpen.value = !isCartOpen.value;
+        }
+
+        function checkout() {
+          orderNumber.value = Math.floor(Math.random() * 1000) + 1000;
+          // Aquí puedes enviar orderNotes.value junto con el pedido
+          console.log("Notas del pedido:", orderNotes.value);
+          showOrderConfirmation.value = true;
+          isCartOpen.value = false;
+        }
+
+        function startNewOrder() {
+          cartItems.value = [];
+          showOrderConfirmation.value = false;
+          orderNotes.value = '';
+        }
+
+        function formatPrice(price) {
+          return price.toFixed(2) + ' €';
+        }
+
+        // Guardar el carrito en localStorage con expiración de 5 minutos (300000 ms)
+        watch(cartItems, (newValue) => {
+          const cartData = {
+            items: newValue,
+            timestamp: Date.now()
+          };
+          localStorage.setItem('cartItems', JSON.stringify(cartData));
+        }, { deep: true });
+
+        // Al iniciar, cargar el carrito si no ha expirado
+        const savedCart = localStorage.getItem('cartItems');
+        if (savedCart) {
+          const cartData = JSON.parse(savedCart);
+          if (Date.now() - cartData.timestamp < 300000) {
+            cartItems.value = cartData.items;
+          } else {
+            localStorage.removeItem('cartItems');
+          }
+        }
+
+        return {
+          categories,
+          selectedCategory,
+          selectedSubcategory,
+          products,
+          filteredProducts,
+          selectedProduct,
+          quantity,
+          cartItems,
+          isCartOpen,
+          showOrderConfirmation,
+          orderNumber,
+          cartSubtotal,
+          cartTotal,
+          selectCategory,
+          selectSubcategory,
+          showProductDetails,
+          closeModal,
+          increaseQuantity,
+          decreaseQuantity,
+          addToCart,
+          addMenuToCart,
+          removeFromCart,
+          toggleCart,
+          checkout,
+          startNewOrder,
+          formatPrice,
+          menuDetails,
+          selectedFirstCourse,
+          selectedSecondCourse,
+          selectedDessert,
+          orderNotes
+        };
+      }
+    }).mount('#app');
+  </script>
+</body>
+</html>
