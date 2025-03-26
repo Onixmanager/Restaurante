@@ -493,20 +493,6 @@
   padding: 5px;
   height: 40px; /* Ajusta este valor según la altura deseada */
 }
-
-    /* Estilos para las imágenes */
-.product-img img {
-  width: 100%;
-  max-height: 200px;
-  object-fit: cover;
-  border-radius: var(--border-radius);
-}
-
-/* Para la versión grande en el modal */
-.product-img.large img {
-  max-height: 300px;
-  width: auto;
-}
     
     /* Responsive Design */
     @media (max-width: 767px) {
@@ -647,19 +633,25 @@
     </main>
 
     <!-- Modal de detalles de producto (para categorías que no sean Menú) -->
-<div class="modal" v-if="selectedProduct" @click.self="closeModal">
-  <div class="modal-content">
-    <button class="close-btn" @click="closeModal">&times;</button>
-    <div class="modal-product">
-      <div class="product-img large">
-        <!-- Corregido a selectedProduct -->
-        <img :src="selectedProduct.image" :alt="selectedProduct.name" class="product-image">
-      </div>
-      <h2>{{ selectedProduct.name }}</h2>
-      <!-- ... resto del código del modal ... -->
-    </div>
-  </div>
-</div>
+    <div class="modal" v-if="selectedProduct" @click.self="closeModal">
+      <div class="modal-content">
+        <button class="close-btn" @click="closeModal">&times;</button>
+        <div class="modal-product">
+          <div class="product-img large">
+            <svg :width="150" :height="150" viewBox="0 0 100 100">
+              <circle :cx="50" :cy="50" :r="45" :fill="selectedProduct.color" />
+              <path :d="selectedProduct.svgPath" fill="#fff" />
+            </svg>
+          </div>
+          <h2>{{ selectedProduct.name }}</h2>
+          <p class="description">{{ selectedProduct.description }}</p>
+          <p class="price">{{ formatPrice(selectedProduct.price) }}</p>
+          
+          <div class="quantity-control">
+            <button @click="decreaseQuantity">-</button>
+            <span>{{ quantity }}</span>
+            <button @click="increaseQuantity">+</button>
+          </div>
           
           <button class="add-to-cart" @click="addToCart">
             Añadir al carrito - {{ formatPrice(selectedProduct.price * quantity) }}
