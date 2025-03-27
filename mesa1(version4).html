@@ -173,7 +173,7 @@
     }
     
     .product-img {
-      width: 200px; /* Ajusta el tamaño que prefieras */
+      width: 800px; /* Ajusta el tamaño que prefieras */
       height: auto; /* Mantiene la proporción */
       max-width: 100%; /* Evita que se desborde en pantallas pequeñas */
       display: flex;
@@ -284,7 +284,7 @@
     
   
     .product-img.large {
-  width: 250px; /* Ajusta el tamaño que prefieras */
+  width: 500px; /* Ajusta el tamaño que prefieras */
   height: auto; /* Mantiene la proporción */
   max-width: 100%; /* Evita que se desborde en pantallas pequeñas */
       display: flex;
@@ -583,7 +583,7 @@
     @click="showProductDetails(product)">
     
     <div class="product-img">
-      <img :src="product.image" :alt="product.name">
+      <img :src="product.image" :alt="product.name" width="120" height="120">
     </div>
     
     <div class="product-info">
@@ -649,7 +649,7 @@
     <div class="modal-product">
       
       <div class="product-img large">
-        <img :src="selectedProduct.image" :alt="selectedProduct.name">
+        <img :src="selectedProduct.image" :alt="selectedProduct.name" width="170" height="170">
       </div>
       
       <h2>{{ selectedProduct.name }}</h2>
