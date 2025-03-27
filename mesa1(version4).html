@@ -281,12 +281,15 @@
     
   
     .product-img.large {
-  width: 100%; /* Para que ocupe todo el contenedor */
-  max-width: 600px; /* Ajusta según lo que necesites */
+  width: 500px; /* Ajusta el tamaño que prefieras */
   height: auto; /* Mantiene la proporción */
-  display: block;
-  margin: 0 auto; /* Centrar la imagen */
-}
+  max-width: 100%; /* Evita que se desborde en pantallas pequeñas */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 0px;
+      background-color: #f9f9f9;
+    }
     
     .quantity-control {
       display: flex;
