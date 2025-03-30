@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panel Administración</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary-color: #2c3e50;
+      --secondary-color: #3498db;
+      --success-color: #27ae60;
+      --warning-color: #f1c40f;
+      --danger-color: #e74c3c;
+      --light-color: #ecf0f1;
+      --text-color: #333;
+      --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      --border-radius: 8px;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    body {
+      background-color: #f5f5f5;
+      color: var(--text-color);
+    }
+    
+    .admin-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    
+    .admin-header {
+      text-align: center;
+      padding: 2rem;
+      background-color: var(--primary-color);
+      color: white;
+      border-radius: var(--border-radius);
+      margin-bottom: 2rem;
+    }
+    
+    .filters {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 2rem;
+    }
+    
+    .filter-btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: var(--border-radius);
+      cursor: pointer;
+      background-color: var(--light-color);
+      transition: all 0.3s ease;
+    }
+    
+    .filter-btn.active {
+      background-color: var(--primary-color);
+      color: white;
+    }
+    
+    .orders-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px;
+    }
+    
+    .order-card {
+      background: white;
+      border-radius: var(--border-radius);
+      padding: 20px;
+      box-shadow: var(--shadow);
+      position: relative;
+    }
+    
+    .order-status {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      padding: 5px 15px;
+      border-radius: var(--border-radius);
+      font-size: 0.8rem;
+      font-weight: bold;
+    }
+    
+    .status-pending {
+      background-color: var(--warning-color);
+      color: var(--text-color);
+    }
+    
+    .status-completed {
+      background-color: var(--success-color);
+      color: white;
+    }
+    
+    .status-cancelled {
+      background-color: var(--danger-color);
+      color: white;
+    }
+    
+    .order-table {
+      font-size: 1.5rem;
+      color: var(--primary-color);
+      margin-bottom: 10px;
+    }
+    
+    .order-time {
+      font-size: 0.9rem;
+      color: #666;
+      margin-bottom: 15px;
+    }
+    
+    .order-items {
+      list-style: none;
+      margin-bottom: 15px;
+    }
+    
+    .order-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .order-notes {
+      background-color: #f8f9fa;
+      padding: 10px;
+      border-radius: var(--border-radius);
+      margin-top: 10px;
+      font-size: 0.9rem;
+    }
+    
+    .order-actions {
+      margin-top: 15px;
+      display: flex;
+      gap: 10px;
+    }
+    
+    .action-btn {
+      flex: 1;
+      padding: 8px;
+      border: none;
+      border-radius: var(--border-radius);
+      cursor: pointer;
+      transition: opacity 0.3s;
+    }
+    
+    .complete-btn {
+      background-color: var(--success-color);
+      color: white;
+    }
+    
+    .cancel-btn {
+      background-color: var(--danger-color);
+      color: white;
+    }
+    
+    @media (max-width: 768px) {
+      .orders-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="admin-container">
+    <header class="admin-header">
+      <h1>Panel de Administración</h1>
+      <p>Pedidos en tiempo real</p>
+    </header>
+    
+    <div class="filters">
+      <button class="filter-btn active">Todos (3)</button>
+      <button class="filter-btn">Pendientes (2)</button>
+      <button class="filter-btn">Completados (1)</button>
+    </div>
+    
+    <div class="orders-grid">
+      <!-- Pedido 1 -->
+      <div class="order-card">
+        <div class="order-status status-pending">Pendiente</div>
+        <h2 class="order-table">Mesa 5</h2>
+        <div class="order-time">Hace 5 minutos</div>
+        <ul class="order-items">
+          <li class="order-item">
+            <span>2x Hamburguesa Clásica</span>
+            <span>17.00€</span>
+          </li>
+          <li class="order-item">
+            <span>1x Refresco Cola</span>
+            <span>2.50€</span>
+          </li>
+          <li class="order-item">
+            <span>1x Tarta Chocolate</span>
+            <span>5.95€</span>
+          </li>
+        </ul>
+        <div class="order-notes">
+          <strong>Notas:</strong> Sin cebolla en la hamburguesa
+        </div>
+        <div class="order-actions">
+          <button class="action-btn complete-btn">Completar</button>
+          <button class="action-btn cancel-btn">Cancelar</button>
+        </div>
+      </div>
+      
+      <!-- Pedido 2 -->
+      <div class="order-card">
+        <div class="order-status status-pending">Pendiente</div>
+        <h2 class="order-table">Mesa 3</h2>
+        <div class="order-time">Hace 12 minutos</div>
+        <ul class="order-items">
+          <li class="order-item">
+            <span>1x Menú Día</span>
+            <span>15.50€</span>
+          </li>
+          <li class="order-item">
+            <span>2x Agua Mineral</span>
+            <span>4.00€</span>
+          </li>
+        </ul>
+        <div class="order-actions">
+          <button class="action-btn complete-btn">Completar</button>
+          <button class="action-btn cancel-btn">Cancelar</button>
+        </div>
+      </div>
+      
+      <!-- Pedido 3 -->
+      <div class="order-card">
+        <div class="order-status status-completed">Completado</div>
+        <h2 class="order-table">Mesa 2</h2>
+        <div class="order-time">Hace 25 minutos</div>
+        <ul class="order-items">
+          <li class="order-item">
+            <span>3x Pizza Pepperoni</span>
+            <span>40.50€</span>
+          </li>
+          <li class="order-item">
+            <span>1x Ensalada César</span>
+            <span>7.50€</span>
+          </li>
+        </ul>
+        <div class="order-notes">
+          <strong>Notas:</strong> Llevar salsa extra
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
