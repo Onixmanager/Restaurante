@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panel Administración</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary-color: #2c3e50;
+      --secondary-color: #3498db;
+      --success-color: #27ae60;
+      --warning-color: #f1c40f;
+      --danger-color: #e74c3c;
+      --light-color: #ecf0f1;
+      --text-color: #333;
+      --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      --border-radius: 8px;
+    }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    body {
+      background-color: #f5f5f5;
+      color: var(--text-color);
+    }
+    .admin-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .admin-header {
+      text-align: center;
+      padding: 2rem;
+      background-color: var(--primary-color);
+      color: white;
+      border-radius: var(--border-radius);
+      margin-bottom: 2rem;
+    }
+    .filters {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 2rem;
+    }
+    .filter-btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: var(--border-radius);
+      cursor: pointer;
+      background-color: var(--light-color);
+      transition: all 0.3s ease;
+    }
+    .filter-btn.active {
+      background-color: var(--primary-color);
+      color: white;
+    }
+    .orders-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px;
+    }
+    .order-card {
+      background: white;
+      border-radius: var(--border-radius);
+      padding: 20px;
+      box-shadow: var(--shadow);
+      position: relative;
+    }
+    .order-status {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      padding: 5px 15px;
+      border-radius: var(--border-radius);
+      font-size: 0.8rem;
+      font-weight: bold;
+    }
+    .status-pending {
+      background-color: var(--warning-color);
+      color: var(--text-color);
+    }
+    .status-completed {
+      background-color: var(--success-color);
+      color: white;
+    }
+    .status-cancelled {
+      background-color: var(--danger-color);
+      color: white;
+    }
+    .order-table {
+      font-size: 1.5rem;
+      color: var(--primary-color);
+      margin-bottom: 10px;
+    }
+    .order-time {
+      font-size: 0.9rem;
+      color: #666;
+      margin-bottom: 15px;
+    }
+    .order-items {
+      list-style: none;
+      margin-bottom: 15px;
+    }
+    .order-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid #eee;
+    }
+    .order-notes {
+      background-color: #f8f9fa;
+      padding: 10px;
+      border-radius: var(--border-radius);
+      margin-top: 10px;
+      font-size: 0.9rem;
+    }
+    .order-actions {
+      margin-top: 15px;
+      display: flex;
+      gap: 10px;
+    }
+    .action-btn {
+      flex: 1;
+      padding: 8px;
+      border: none;
+      border-radius: var(--border-radius);
+      cursor: pointer;
+      transition: opacity 0.3s;
+    }
+    .complete-btn {
+      background-color: var(--success-color);
+      color: white;
+    }
+    .cancel-btn {
+      background-color: var(--danger-color);
+      color: white;
+    }
+    @media (max-width: 768px) {
+      .orders-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="admin-container">
+    <header class="admin-header">
+      <h1>Panel de Administración</h1>
+      <p>Pedidos en tiempo real</p>
+    </header>
+    
+    <div class="filters">
+      <button class="filter-btn active" data-filter="all">Todos</button>
+      <button class="filter-btn" data-filter="pending">Pendientes</button>
+      <button class="filter-btn" data-filter="completed">Completados</button>
+      <button class="filter-btn" data-filter="cancelled">Cancelados</button>
+    </div>
+    
+    <div class="orders-grid" id="ordersGrid">
+      <!-- Aquí se agregarán los pedidos en tiempo real -->
+    </div>
+  </div>
+
+  <!-- Script de módulo que incluye Firebase y la lógica de administración -->
+  <script type="module">
+    // Importa las funciones necesarias desde Firebase
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+    import { 
+      getDatabase, ref, onChildAdded, onChildChanged, onChildRemoved, update 
+    } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
+
+    // Configuración de Firebase – REEMPLAZA con tus datos
+    const firebaseConfig = {
+      apiKey: "TU_API_KEY",
+      authDomain: "TU_AUTH_DOMAIN",
+      databaseURL: "TU_DATABASE_URL",
+      projectId: "TU_PROJECT_ID",
+      storageBucket: "TU_STORAGE_BUCKET",
+      messagingSenderId: "TU_MESSAGING_SENDER_ID",
+      appId: "TU_APP_ID"
+    };
+
+    // Inicializa Firebase
+    const appFirebase = initializeApp(firebaseConfig);
+    const db = getDatabase(appFirebase);
+
+    // Referencia a la ruta de pedidos en Firebase
+    const pedidosRef = ref(db, 'pedidos');
+
+    const ordersGrid = document.getElementById('ordersGrid');
+    const filterButtons = document.querySelectorAll('.filter-btn');
+
+    // Función para calcular el tiempo transcurrido desde la fecha del pedido
+    function timeAgo(fecha) {
+      const diffMs = Date.now() - new Date(fecha).getTime();
+      const diffMin = Math.floor(diffMs / 60000);
+      if(diffMin < 1) return "Hace unos instantes";
+      return `Hace ${diffMin} minuto${diffMin > 1 ? 's' : ''}`;
+    }
+
+    // Función para crear el HTML de un pedido
+    function crearOrderCard(key, data) {
+      // Si no existe status, asigna "Pendiente"
+      const status = data.status ? data.status : "pending";
+      let statusClass = "status-pending";
+      let statusText = "Pendiente";
+      if(status === "completed") {
+        statusClass = "status-completed";
+        statusText = "Completado";
+      } else if(status === "cancelled") {
+        statusClass = "status-cancelled";
+        statusText = "Cancelado";
+      }
+      
+      // Genera la lista de items. Se asume que data.pedido es un array de objetos
+      let itemsHTML = "";
+      if (Array.isArray(data.pedido)) {
+        data.pedido.forEach(item => {
+          // Se asume que cada item tiene "product" (con propiedad name y price) y "quantity"
+          const nombre = item.product && item.product.name ? item.product.name : "Producto";
+          const cantidad = item.quantity ? item.quantity : 1;
+          const precioItem = item.product && item.product.price ? (item.product.price * cantidad).toFixed(2) : "0.00";
+          itemsHTML += `
+            <li class="order-item">
+              <span>${cantidad}x ${nombre}</span>
+              <span>${precioItem}€</span>
+            </li>
+          `;
+        });
+      }
+      
+      // Crea el contenedor del pedido
+      const card = document.createElement('div');
+      card.classList.add('order-card');
+      card.setAttribute('data-status', status);
+      card.setAttribute('data-key', key);
+      card.innerHTML = `
+        <div class="order-status ${statusClass}">${statusText}</div>
+        <h2 class="order-table">${data.mesa || 'Mesa Desconocida'}</h2>
+        <div class="order-time">${timeAgo(data.fecha)}</div>
+        <ul class="order-items">
+          ${itemsHTML}
+        </ul>
+        ${data.notas ? `<div class="order-notes"><strong>Notas:</strong> ${data.notas}</div>` : ''}
+        <div class="order-actions">
+          <button class="action-btn complete-btn" data-action="complete">Completar</button>
+          <button class="action-btn cancel-btn" data-action="cancel">Cancelar</button>
+        </div>
+      `;
+      
+      // Asigna eventos a los botones de acción
+      const completeBtn = card.querySelector('[data-action="complete"]');
+      const cancelBtn = card.querySelector('[data-action="cancel"]');
+      completeBtn.addEventListener('click', () => actualizarEstadoPedido(key, 'completed'));
+      cancelBtn.addEventListener('click', () => actualizarEstadoPedido(key, 'cancelled'));
+      
+      return card;
+    }
+
+    // Función para actualizar el estado de un pedido en Firebase
+    function actualizarEstadoPedido(key, nuevoEstado) {
+      const pedidoRef = ref(db, 'pedidos/' + key);
+      update(pedidoRef, { status: nuevoEstado })
+        .then(() => {
+          console.log(`Pedido ${key} actualizado a ${nuevoEstado}`);
+        })
+        .catch(error => {
+          console.error('Error al actualizar el estado:', error);
+        });
+    }
+
+    // Función para agregar o actualizar un pedido en el DOM
+    function agregarOActualizarPedido(key, data) {
+      const existente = document.querySelector(`.order-card[data-key="${key}"]`);
+      const card = crearOrderCard(key, data);
+      if (existente) {
+        ordersGrid.replaceChild(card, existente);
+      } else {
+        ordersGrid.appendChild(card);
+      }
+    }
+
+    // Escucha en tiempo real cuando se agrega un nuevo pedido
+    onChildAdded(pedidosRef, (snapshot) => {
+      const key = snapshot.key;
+      const data = snapshot.val();
+      agregarOActualizarPedido(key, data);
+    });
+
+    // Escucha en tiempo real cuando un pedido se actualiza
+    onChildChanged(pedidosRef, (snapshot) => {
+      const key = snapshot.key;
+      const data = snapshot.val();
+      agregarOActualizarPedido(key, data);
+    });
+
+    // Escucha en tiempo real cuando se elimina un pedido
+    onChildRemoved(pedidosRef, (snapshot) => {
+      const key = snapshot.key;
+      const existente = document.querySelector(`.order-card[data-key="${key}"]`);
+      if (existente) {
+        ordersGrid.removeChild(existente);
+      }
+    });
+
+    // Filtro de pedidos según estado
+    filterButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        filterButtons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const filtro = btn.getAttribute('data-filter');
+        filtrarPedidos(filtro);
+      });
+    });
+
+    function filtrarPedidos(filtro) {
+      const cards = document.querySelectorAll('.order-card');
+      cards.forEach(card => {
+        const status = card.getAttribute('data-status');
+        if(filtro === 'all' || filtro === status) {
+          card.style.display = 'block';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+  </script>
+</body>
+</html>
