@@ -53,11 +53,14 @@
       z-index: 10;
     }
     
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 10px;
+
+    .logo { 
+      display: flex; 
+      align-items: center; 
+      gap: 10px; 
     }
+
+
     
     .logo h1 {
       font-size: 1.2rem;
@@ -173,10 +176,13 @@
     }
     
     .product-img {
+      width: 800px; /* Ajusta el tamaño que prefieras */
+      height: auto; /* Mantiene la proporción */
+      max-width: 100%; /* Evita que se desborde en pantallas pequeñas */
       display: flex;
       justify-content: center;
       align-items: center;
-      padding: 20px;
+      padding: 0px;
       background-color: #f9f9f9;
     }
     
@@ -266,9 +272,9 @@
       right: 10px;
       background: none;
       border: none;
-      font-size: 1.5rem;
+      font-size: 2rem;
       cursor: pointer;
-      color: #777;
+      color: red;
     }
     
     .modal-product {
@@ -279,8 +285,16 @@
       text-align: center;
     }
     
+  
     .product-img.large {
-      margin-bottom: 20px;
+  width: 500px; /* Ajusta el tamaño que prefieras */
+  height: auto; /* Mantiene la proporción */
+  max-width: 100%; /* Evita que se desborde en pantallas pequeñas */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 0px;
+      background-color: #f9f9f9;
     }
     
     .quantity-control {
@@ -530,7 +544,7 @@
   <div id="app">
     <header>
      <div class="logo">
-    <img src="https://raw.githubusercontent.com/Onixmanager/Restaurante/refs/heads/main/ham1.webp" alt="Logo del Restaurante" width="40" height="40">
+    <img src="https://raw.githubusercontent.com/Onixmanager/Restaurante/refs/heads/main/logobar.jpg" alt="Logo del Restaurante" width="40" height="40">
     <h1>Nombre Restaurante</h1>
 </div>
       <div class="cart-icon" @click="toggleCart">
@@ -564,25 +578,24 @@
       </div>
 
       <!-- Vista normal para categorías que no sean Menú -->
-      <div class="products" v-if="selectedCategory.id !== 6">
-        <div 
-          v-for="product in filteredProducts" 
-          :key="product.id" 
-          class="product-card"
-          @click="showProductDetails(product)">
-          <div class="product-img">
-            <svg :width="100" :height="100" viewBox="0 0 100 100">
-              <circle :cx="50" :cy="50" :r="45" :fill="product.color" />
-              <path :d="product.svgPath" fill="#fff" />
-            </svg>
-          </div>
-          <div class="product-info">
-            <h3>{{ product.name }}</h3>
-            <p class="description">{{ product.description }}</p>
-            <p class="price">{{ formatPrice(product.price) }}</p>
-          </div>
-        </div>
-      </div>
+<div class="products" v-if="selectedCategory.id !== 6">
+  <div 
+    v-for="product in filteredProducts" 
+    :key="product.id" 
+    class="product-card"
+    @click="showProductDetails(product)">
+    
+    <div class="product-img">
+      <img :src="product.image" :alt="product.name" width="170" height="170">
+    </div>
+    
+    <div class="product-info">
+      <h3>{{ product.name }}</h3>
+      <p class="description">{{ product.description }}</p>
+      <p class="price">{{ formatPrice(product.price) }}</p>
+    </div>
+  </div>
+</div>
 
       <!-- Vista especial para Menú: cuando se seleccione una subcategoría -->
       <div v-else-if="selectedCategory.id === 6 && selectedSubcategory">
@@ -632,33 +645,32 @@
       </div>
     </main>
 
-    <!-- Modal de detalles de producto (para categorías que no sean Menú) -->
-    <div class="modal" v-if="selectedProduct" @click.self="closeModal">
-      <div class="modal-content">
-        <button class="close-btn" @click="closeModal">&times;</button>
-        <div class="modal-product">
-          <div class="product-img large">
-            <svg :width="150" :height="150" viewBox="0 0 100 100">
-              <circle :cx="50" :cy="50" :r="45" :fill="selectedProduct.color" />
-              <path :d="selectedProduct.svgPath" fill="#fff" />
-            </svg>
-          </div>
-          <h2>{{ selectedProduct.name }}</h2>
-          <p class="description">{{ selectedProduct.description }}</p>
-          <p class="price">{{ formatPrice(selectedProduct.price) }}</p>
-          
-          <div class="quantity-control">
-            <button @click="decreaseQuantity">-</button>
-            <span>{{ quantity }}</span>
-            <button @click="increaseQuantity">+</button>
-          </div>
-          
-          <button class="add-to-cart" @click="addToCart">
-            Añadir al carrito - {{ formatPrice(selectedProduct.price * quantity) }}
-          </button>
-        </div>
+  <!-- Modal de detalles de producto (para categorías que no sean Menú) -->
+<div class="modal" v-if="selectedProduct" @click.self="closeModal">
+  <div class="modal-content">
+    <button class="close-btn" @click="closeModal">&times;</button>
+    <div class="modal-product">
+      
+      <div class="product-img large">
+        <img :src="selectedProduct.image" :alt="selectedProduct.name" width="275" height="275">
       </div>
+      
+      <h2>{{ selectedProduct.name }}</h2>
+      <p class="description">{{ selectedProduct.description }}</p>
+      <p class="price">{{ formatPrice(selectedProduct.price) }}</p>
+      
+      <div class="quantity-control">
+        <button @click="decreaseQuantity">-</button>
+        <span>{{ quantity }}</span>
+        <button @click="increaseQuantity">+</button>
+      </div>
+      
+      <button class="add-to-cart" @click="addToCart">
+        Añadir al carrito - {{ formatPrice(selectedProduct.price * quantity) }}
+      </button>
     </div>
+  </div>
+</div>
 
     <!-- Panel del carrito -->
     <div class="cart-panel" :class="{ open: isCartOpen }">
@@ -769,7 +781,7 @@
     price: 8.50,
     categoryId: 1,
     color: '#e67e22',
-    image: 'ruta-de-tu-imagen.jpg'
+    image: 'https://raw.githubusercontent.com/Onixmanager/Restaurante/refs/heads/main/ham1.webp'
   },
           { 
             id: 2,
@@ -778,7 +790,7 @@
             price: 9.95,
             categoryId: 1,
             color: '#d35400',
-            image: 'https://raw.githubusercontent.com/Onixmanager/Restaurante/refs/heads/main/ham1.webp'
+            image: 'https://raw.githubusercontent.com/Onixmanager/Restaurante/refs/heads/main/ham2.jpg'
           },
           { 
             id: 3,
@@ -806,7 +818,7 @@
             categoryId: 4,
             subcategoryId: 42,
             color: '#34495e',
-            image: 'ruta-de-tu-imagen.jpg'
+            image: 'https://raw.githubusercontent.com/Onixmanager/Restaurante/refs/heads/main/cocacola.png'
           },
           { 
             id: 6,
@@ -824,7 +836,7 @@
             price: 8.95,
             categoryId: 1,
             color: '#16a085',
-            image: 'ruta-de-tu-imagen.jpg'
+            image: 'https://raw.githubusercontent.com/Onixmanager/Restaurante/refs/heads/main/ham3.jpeg'
           },
           { 
             id: 8,
@@ -1082,5 +1094,6 @@
       }
     }).mount('#app');
   </script>
+  <script type="module" src="app.js"></script>
 </body>
 </html>
