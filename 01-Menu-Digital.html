@@ -1038,25 +1038,7 @@
           return price.toFixed(2) + ' €';
         }
 
-        // Guardar el carrito en localStorage con expiración de 5 minutos (300000 ms)
-        watch(cartItems, (newValue) => {
-          const cartData = {
-            items: newValue,
-            timestamp: Date.now()
-          };
-          localStorage.setItem('cartItems', JSON.stringify(cartData));
-        }, { deep: true });
-
-        // Al iniciar, cargar el carrito si no ha expirado
-        const savedCart = localStorage.getItem('cartItems');
-        if (savedCart) {
-          const cartData = JSON.parse(savedCart);
-          if (Date.now() - cartData.timestamp < 300000) {
-            cartItems.value = cartData.items;
-          } else {
-            localStorage.removeItem('cartItems');
-          }
-        }
+        
 
         return {
           categories,
